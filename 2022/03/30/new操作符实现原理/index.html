@@ -83,16 +83,16 @@
     <h1 id="new操作符实现原理"><a href="#new操作符实现原理" class="headerlink" title="new操作符实现原理"></a>new操作符实现原理</h1><p>new ：实例化一个对象，继承到构造函数的属性和方法</p>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">Foo</span>(<span class="params">e</span>)&#123;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">name</span> = <span class="string">&quot;dokidoki&quot;</span>;</span><br><span class="line">      <span class="variable language_">this</span>.<span class="property">age</span> = e;</span><br><span class="line">    &#125;</span><br><span class="line"><span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">new</span> <span class="title class_">Foo</span>(<span class="number">18</span>))</span><br></pre></td></tr></table></figure>
 
-<p>打印结果为：<img src="https://gitee.com/liu-yuenan/blog-img/raw/master/img/202203301333376.png" alt="image-20220213213033567"></p>
-<p><img src="https://gitee.com/liu-yuenan/blog-img/raw/master/img/202203301333590.png" alt="image-20220213221154250"></p>
+<p>打印结果为：<img src="/image-20220213213033567.png" alt="image-20220213213033567"></p>
+<p><img src="/image-20220213221154250.png" alt="image-20220213221154250"></p>
 <h2 id="前置知识："><a href="#前置知识：" class="headerlink" title="前置知识："></a>前置知识：</h2><p>一篇文章看懂_proto_和prototype的关系及区别:<a target="_blank" rel="noopener" href="https://www.jianshu.com/p/7d58f8f45557">https://www.jianshu.com/p/7d58f8f45557</a></p>
-<p><img src="https://gitee.com/liu-yuenan/blog-img/raw/master/img/202203301334553.png" alt="image-20220213215411156"></p>
+<p><img src="/image-20220213215411156.png" alt="image-20220213215411156"></p>
 <p>prototype:显式原型链</p>
 <p>每一个函数在创建之后都会自动拥有的属性，这个属性是一个指针，指向函数的原型对象；且只有函数才有</p>
 <p>所以说 <strong>Person.prototype就是原型对象</strong>，也就是实例person1和person2的原型。</p>
 <p>原型对象的好处是可以让所有对象实例共享它所包含的属性和方法</p>
 <p>所以构造函数和原型之间的关系为：</p>
-<p><img src="https://gitee.com/liu-yuenan/blog-img/raw/master/img/202203301334060.png" alt="image-20220213220011593"></p>
+<p><img src="/image-20220213220011593.png" alt="image-20220213220011593"></p>
 <p><code>__proto__</code>：隐式原型链</p>
 <p>Foo.prototype –&gt;{constructor: f Foo()}</p>
 <p>[[prototype]]私有属性，通过proto方法访问</p>
