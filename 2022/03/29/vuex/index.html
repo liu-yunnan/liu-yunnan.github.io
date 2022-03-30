@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  
+  <title>vuex | DoKiDoKi的小站</title>
+  <meta name="google-site-verification" content="" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta itemprop="name" content="DoKiDoKi的小站" />
+  <meta itemprop="description" content="努力进步，分享一些学习笔记" />
+  <meta itemprop="image" content="" />
+  <link rel="shortcut icon" href="" type="image/x-icon">
+  <!-- keywords and description -->
+  
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+      onload="renderMathInElement(document.body);"></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <div id="container">
+    <header>
+  <div class="site-title">
+    <a href="/">
+      DoKiDoKi的小站
+    </a>
+  </div>
+  
+  <div class="site-subtitle">
+    努力进步，分享一些学习笔记
+  </div>
+  
+  
+  <p class="links">
+    
+    <a target="_blank" rel="noopener" href="https://www.baidu.com/">
+      <img src="/images/links/github1.png" alt="GitHub">
+    </a>
+    
+    <a target="_blank" rel="noopener" href="https://www.baidu.com/">
+      <img src="/images/links/链接.png" alt="link">
+    </a>
+    
+    <a target="_blank" rel="noopener" href="https://www.baidu.com/">
+      <img src="/images/links/用户.png" alt="about">
+    </a>
+    
+  </p>
+  
+</header>
+    <div id="main">
+      <article class="post">
+  <h3 class="date">
+  <time datetime="2022-03-29T14:14:21.189Z">
+    Mar 29, 2022
+  </time>
+</h3>
+  <h1>vuex</h1>
+  <p class="post-info">
+  
+  
+  <a href="/2022/03/29/vuex/#waline" class="post-info-item comment-count waline-comment-count" id="/2022/03/29/vuex/">获取中...</a>
+  <span class="post-info-item view-count waline-visitor-count" id="/2022/03/29/vuex/">获取中...</span>
+  
+</p>
+  
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vue/" rel="tag">vue</a></li></ul>
+
+  
+  <img src="https://cn.vuejs.org/images/logo.svg" alt="vuex">
+  
+  <article>
+    <h1 id="vuex"><a href="#vuex" class="headerlink" title="vuex"></a>vuex</h1><p>实现组件全局状态（数据）管理的一种机制，方便实现组件之间的数据共享</p>
+<ul>
+<li>父向子传值：v-bind</li>
+<li>子向父传值：v-on</li>
+<li>兄弟组件之间共享数据：EventBus<ul>
+<li>$on接收数据的那个组件</li>
+<li>$emit发送数据的那组件</li>
+</ul>
+</li>
+</ul>
+<p>好处：</p>
+<ol>
+<li>集中管理共享数据，易于开发和后期维护</li>
+<li>高效实现组件之间的数据共享，提高开发效率</li>
+<li>vuex中的数据都是<strong>响应式</strong>的，能够实时保持数据与页面的<strong>同步</strong></li>
+</ol>
+<p>需要共享的数据，有必要存在vuex，一般情况，组件的私有数据，放入data中</p>
+<h2 id="核心概念"><a href="#核心概念" class="headerlink" title="核心概念"></a>核心概念</h2><h3 id="State-提供唯一的公共数据源"><a href="#State-提供唯一的公共数据源" class="headerlink" title="State:提供唯一的公共数据源"></a>State:提供唯一的<strong>公共数据源</strong></h3><p>所有共享的数据都要统一放到Store的State中进行存储</p>
+<ol>
+<li>第一种方法：this.$store.state.数值名称</li>
+</ol>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">export default new Vuex.Store(&#123;</span><br><span class="line">  state: &#123;</span><br><span class="line">    count: 1</span><br><span class="line">  &#125;,</span><br><span class="line">  mutations: &#123;</span><br><span class="line">  &#125;,</span><br><span class="line">  actions: &#123;</span><br><span class="line">  &#125;,</span><br><span class="line">  modules: &#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    count:&#123;&#123;$store.state.count&#125;&#125;</span><br><span class="line">    &lt;button @click=&quot;sub&quot;&gt;-1&lt;/button&gt;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  methods: &#123;</span><br><span class="line">    sub () &#123;</span><br><span class="line">      this.$store.state.count -= 1</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>2.第二种方法：</p>
+<ul>
+<li>从vuex中按需导入mapState函数。</li>
+<li>通过导入的mapState函数，将当前组件需要的全局数据映射为当前组件的computed计算属性</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">------------------------------vuex----------------------------------</span><br><span class="line">export default new Vuex.Store(&#123;</span><br><span class="line">  state: &#123;</span><br><span class="line">    count: 1</span><br><span class="line">  &#125;,</span><br><span class="line">  mutations: &#123;</span><br><span class="line">  &#125;,</span><br><span class="line">  actions: &#123;</span><br><span class="line">  &#125;,</span><br><span class="line">  modules: &#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">------------------------------组件----------------------------------</span><br><span class="line">&lt;template&gt;</span><br><span class="line">  &lt;div&gt;</span><br><span class="line">    count:&#123;&#123;count&#125;&#125;</span><br><span class="line">  &lt;/div&gt;</span><br><span class="line">&lt;/template&gt;</span><br><span class="line"></span><br><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; mapState &#125; from &#x27;vuex&#x27;</span><br><span class="line">export default &#123;</span><br><span class="line">  computed: &#123;</span><br><span class="line">    // 将全局数据映射为计算属性</span><br><span class="line">    ...mapState([&#x27;count&#x27;])</span><br><span class="line">    // ...展开运算符</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="Mutation-用于变更Store中的数据"><a href="#Mutation-用于变更Store中的数据" class="headerlink" title="Mutation:用于变更Store中的数据"></a>Mutation:用于<strong>变更Store中的数据</strong></h3><ol>
+<li><strong>只能通过mutation变更Store数据，不可以直接操作Store中的数据</strong></li>
+<li>通过这种方式虽然操作起来繁琐，但是可以<strong>集中监控所有数据变化</strong></li>
+</ol>
+<p>1.触发的第一种方法</p>
+<p> this.$store.commit()</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">------------------------------vuex----------------------------------</span><br><span class="line"></span><br><span class="line">export default new Vuex.Store(&#123;</span><br><span class="line">  // 唯一的公共数据源，所有共享的数据都要统一放到Store的State中进行存储</span><br><span class="line">  state: &#123;</span><br><span class="line">    count: 1</span><br><span class="line">  &#125;,</span><br><span class="line">  mutations: &#123;</span><br><span class="line">    // 传参</span><br><span class="line">    addN (state, step) &#123;</span><br><span class="line">      state.count += step</span><br><span class="line">    &#125;,</span><br><span class="line">    // 不传参</span><br><span class="line">    sub (state) &#123;</span><br><span class="line">      state.count -= 1</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line">------------------------------组件1----------------------------------</span><br><span class="line">&lt;script&gt;</span><br><span class="line">export default &#123;</span><br><span class="line">  methods: &#123;</span><br><span class="line">    add () &#123;</span><br><span class="line">      // commit 的作用，就是调用 某个mutation函数</span><br><span class="line">      this.$store.commit(&#x27;addN&#x27;, 3)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br><span class="line">------------------------------组件2----------------------------------</span><br><span class="line"> methods: &#123;</span><br><span class="line">    sub () &#123;</span><br><span class="line">      // 触发mutations的第一种方式</span><br><span class="line">      this.$store.commit(&#x27;sub&#x27;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<p>2.触发的第二种方式</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;script&gt;</span><br><span class="line">import &#123; mapMutations &#125; from &#x27;vuex&#x27;</span><br><span class="line"></span><br><span class="line">export default &#123;</span><br><span class="line">  methods: &#123;</span><br><span class="line">    // sub () &#123;</span><br><span class="line">    //   // 触发mutations的第一种方式</span><br><span class="line">    //   this.$store.commit(&#x27;sub&#x27;)</span><br><span class="line">    // &#125;</span><br><span class="line">    ...mapMutations([&#x27;sub&#x27;, &#x27;subN&#x27;]),</span><br><span class="line">    handle1 () &#123;</span><br><span class="line">      // this.sub()</span><br><span class="line">        //sub也可在button上直接绑定</span><br><span class="line">      this.subN(3)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line">&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+
+<p>延时操作</p>
+<h5 id="motations函数中不能执行异步操作"><a href="#motations函数中不能执行异步操作" class="headerlink" title="motations函数中不能执行异步操作"></a>motations函数中不能执行异步操作</h5><h3 id="Action-用于异步处理任务"><a href="#Action-用于异步处理任务" class="headerlink" title="Action:用于异步处理任务"></a>Action:用于<strong>异步处理任务</strong></h3><ul>
+<li>异步操作变更数据：必须通过action，不能使用motations，但是在action中还是要通过触发mutation的方式间接变更数据</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">// 在action中要通过触发mutation的方式间接变更数据</span><br><span class="line">  actions: &#123;</span><br><span class="line">    addasync (context) &#123;</span><br><span class="line">      setTimeout(() =&gt; &#123;</span><br><span class="line">        context.commit(&#x27;add&#x27;)</span><br><span class="line">      &#125;, 1000)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;,</span><br></pre></td></tr></table></figure>
+
+<p>触发actions异步任务时 <strong>携带参数</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">addasync1 (context, step) &#123;</span><br><span class="line">     setTimeout(() =&gt; &#123;</span><br><span class="line">       context.commit(&#x27;addN&#x27;, step)</span><br><span class="line">     &#125;, 1000)</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+
+<ol>
+<li><p>触发actions的第一种方式</p>
+<p>this.$store.dispatch()</p>
+</li>
+<li><p>触发actions的第二种方式</p>
+<p>按需导入mapActions函数，将需要的actions函数，映射为当前组件的methods方法</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">   &lt;button @click=&#x27;addasync&#x27;&gt;async+1&lt;/button&gt;</span><br><span class="line">&lt;button @click=&#x27;addasync1(5)&#x27;&gt;async+n&lt;/button&gt;</span><br><span class="line">import &#123; mapActions &#125; from &#x27;vuex&#x27;</span><br><span class="line">methods: &#123;</span><br><span class="line">    ...mapActions([&#x27;addasync&#x27;, &#x27;addasync1&#x27;]),</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="Getter-对Store中的数据进行加工处理形成新的数据"><a href="#Getter-对Store中的数据进行加工处理形成新的数据" class="headerlink" title="Getter:对Store中的数据进行加工处理形成新的数据"></a>Getter:对Store中的数据进行加工处理形成新的数据</h3><ol>
+<li><p>对Store中已有的数据加工处理之后形成新的数据，类似<strong>vue的计算属性</strong></p>
+</li>
+<li><p>Store中数据发生变化，Getter的数据也会跟着变化</p>
+</li>
+<li><p>使用getters的第一种方式：</p>
+<p>this.$store.getters.名称</p>
+</li>
+<li><p>第二种方式：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">import &#123; mapGetters &#125; from &#x27;vuex&#x27;</span><br><span class="line">computed: &#123;</span><br><span class="line">    ...mapGetters([&#x27;showNum&#x27;]),</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+  </article>
+  
+</article>
+
+
+<div id="waline"></div>
+
+    </div>
+  </div>
+  <footer>
+  
+  
+  <p id="busuanzi_container_site_pv">
+    本站访问量 <span id="busuanzi_value_site_pv">获取中...</span>
+  </p>
+  
+  <p>
+    Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> | Theme <a target="_blank" rel="noopener" href="https://github.com/syy11cn/hexo-theme-linear">Linear</a> from <a target="_blank" rel="noopener" href="https://syy11.cn">Yiyang Sun</a>
+  </p>
+</footer>
+  
+  <canvas id="c_n6" width="314" height="731" style="position: fixed; top: 0px; left: 0px; z-index: -1; opacity: 0.5;"></canvas>
+  <script z-index="-1" color="" opacity="" count="" src="https://cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+  
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  <script>
+    Waline({
+      el: '#waline',
+      placeholder: '',
+      avatar: 'retro',
+      visitor: true,
+      requiredFields: ['nick', 'mail'],
+      serverURL: '',
+      emoji: [
+        'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/bilibili',
+        'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/qq',
+        'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/alus',
+        'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/tw-emoji',
+        'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/weibo',
+        'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/tieba',
+      ]
+    });
+  </script>
+</body>
+
+</html>
