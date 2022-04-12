@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  
+  <title>虚拟DOM和diff算法 | DoKiDoKi的小站</title>
+  <meta name="google-site-verification" content="" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta itemprop="name" content="DoKiDoKi的小站" />
+  <meta itemprop="description" content="努力进步，分享一些学习笔记" />
+  <meta itemprop="image" content="" />
+  <link rel="shortcut icon" href="" type="image/x-icon">
+  <!-- keywords and description -->
+  
+  <meta name="keywords" content="" />
+  <meta name="description" content="" />
+  
+  
+<link rel="stylesheet" href="/css/style.css">
+
+  <script src="//cdn.jsdelivr.net/npm/@waline/client/dist/Waline.min.js"></script>
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.css" integrity="sha384-KiWOvVjnN8qwAZbuQyWDIbfCLFhLXNETzBQjA/92pIowpC0d2O3nppDGQVgwd2nB" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/katex.min.js" integrity="sha384-0fdwu/T/EQMsQlrHCCHoH10pkPLlKA1jL5dFyUOvB3lfeT2540/2g6YgSi2BL14p" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.15.3/dist/contrib/auto-render.min.js" integrity="sha384-+XBljXPPiv+OzfbB3cVmLHf4hdUFHlWNZN5spNQ7rmHTXpd7WvJum6fIACpNNfIR" crossorigin="anonymous"
+      onload="renderMathInElement(document.body);"></script>
+<meta name="generator" content="Hexo 6.1.0"></head>
+
+
+<body>
+  <div id="container">
+    <header>
+  <div class="site-title">
+    <a href="/">
+      DoKiDoKi的小站
+    </a>
+  </div>
+  
+  <div class="site-subtitle">
+    努力进步，分享一些学习笔记
+  </div>
+  
+  
+  <p class="links">
+    
+    <a target="_blank" rel="noopener" href="https://gitee.com/liu-yuenan">
+      <img src="/images/links/gitee.png" alt="Gitee">
+    </a>
+    
+    <a target="_blank" rel="noopener" href="https://github.com/liu-yunnan/">
+      <img src="/images/links/github1.png" alt="GitHub">
+    </a>
+    
+    <a target="_blank" rel="noopener" href="https://www.baidu.com/">
+      <img src="/images/links/链接.png" alt="link">
+    </a>
+    
+    <a target="_blank" rel="noopener" href="https://www.baidu.com/">
+      <img src="/images/links/用户.png" alt="about">
+    </a>
+    
+  </p>
+  
+</header>
+    <div id="main">
+      <article class="post">
+  <h3 class="date">
+  <time datetime="2022-04-12T11:20:21.000Z">
+    Apr 12, 2022
+  </time>
+</h3>
+  <h1>虚拟DOM和diff算法</h1>
+  <p class="post-info">
+  
+  
+  <a href="/2022/04/12/%E8%99%9A%E6%8B%9FDOM%E5%92%8Cdiff%E7%AE%97%E6%B3%95/#waline" class="post-info-item comment-count waline-comment-count" id="/2022/04/12/%E8%99%9A%E6%8B%9FDOM%E5%92%8Cdiff%E7%AE%97%E6%B3%95/">获取中...</a>
+  <span class="post-info-item view-count waline-visitor-count" id="/2022/04/12/%E8%99%9A%E6%8B%9FDOM%E5%92%8Cdiff%E7%AE%97%E6%B3%95/">获取中...</span>
+  
+</p>
+  
+<ul class="article-tag-list" itemprop="keywords"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/vue/" rel="tag">vue</a></li></ul>
+
+  
+  <article>
+    <h1 id="虚拟DOM和diff算法"><a href="#虚拟DOM和diff算法" class="headerlink" title="虚拟DOM和diff算法"></a>虚拟DOM和diff算法</h1><h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><ul>
+<li><p>vdom是实现vue和React的重要基石</p>
+</li>
+<li><p>diff算法是vdom中最核心、最关键的部分</p>
+</li>
+<li><p>vdom就是创建js对象，用这个对象结构代表真实的dom结构。这个对象上通常含有标签名，标签上的属性，事件监听和子元素们，以及其他属性</p>
+</li>
+<li><p>例如：</p>
+</li>
+</ul>
+<p><img src="https://liu-yunnan-hexo-blog.oss-cn-beijing.aliyuncs.com/img/202204121920703.png" alt="image-20220412160432957"></p>
+<p><strong>用js模拟DOM结构：</strong></p>
+<p><img src="https://liu-yunnan-hexo-blog.oss-cn-beijing.aliyuncs.com/img/202204121920041.png" alt="image-20220412160458479"></p>
+<h3 id="为什么使用虚拟DOM，有什么好处"><a href="#为什么使用虚拟DOM，有什么好处" class="headerlink" title="为什么使用虚拟DOM，有什么好处"></a>为什么使用虚拟DOM，有什么好处</h3><p>DOM是很慢的。如果我们把一个简单的div元素的属性都打印出来，你会看到：</p>
+<p><img src="https://liu-yunnan-hexo-blog.oss-cn-beijing.aliyuncs.com/img/202204121920511.jpeg" alt="img"><img src="https://pic1.zhimg.com/80/d5cda33e28d83ba12368202645f9e35b_1440w.jpg?source=1940ef5c" alt="img"></p>
+<p>而这仅仅是第一层。真正的 DOM 元素非常庞大，这是因为标准就是这么设计的。而且操作它们的时候你要小心翼翼，轻微的触碰可能就会导致页面重排，这可是杀死性能的罪魁祸首。</p>
+<p>相对于 DOM 对象，原生的 <strong>JavaScript 对象处理起来更快，而且更简单</strong>。DOM 树上的结构、属性信息我们都可以很容易地用 JavaScript 对象表示出来：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> element = &#123;</span><br><span class="line">  <span class="attr">tagName</span>: <span class="string">&#x27;ul&#x27;</span>, <span class="comment">// 节点标签名</span></span><br><span class="line">  <span class="attr">props</span>: &#123; <span class="comment">// DOM的属性，用一个对象存储键值对</span></span><br><span class="line">    <span class="attr">id</span>: <span class="string">&#x27;list&#x27;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="attr">children</span>: [ <span class="comment">// 该节点的子节点</span></span><br><span class="line">    &#123;<span class="attr">tagName</span>: <span class="string">&#x27;li&#x27;</span>, <span class="attr">props</span>: &#123;<span class="attr">class</span>: <span class="string">&#x27;item&#x27;</span>&#125;, <span class="attr">children</span>: [<span class="string">&quot;Item 1&quot;</span>]&#125;,</span><br><span class="line">    &#123;<span class="attr">tagName</span>: <span class="string">&#x27;li&#x27;</span>, <span class="attr">props</span>: &#123;<span class="attr">class</span>: <span class="string">&#x27;item&#x27;</span>&#125;, <span class="attr">children</span>: [<span class="string">&quot;Item 2&quot;</span>]&#125;,</span><br><span class="line">    &#123;<span class="attr">tagName</span>: <span class="string">&#x27;li&#x27;</span>, <span class="attr">props</span>: &#123;<span class="attr">class</span>: <span class="string">&#x27;item&#x27;</span>&#125;, <span class="attr">children</span>: [<span class="string">&quot;Item 3&quot;</span>]&#125;,</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>上面对应的HTML写法是：</p>
+<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">ul</span> <span class="attr">id</span>=<span class="string">&#x27;list&#x27;</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">&#x27;item&#x27;</span>&gt;</span>Item 1<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">&#x27;item&#x27;</span>&gt;</span>Item 2<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line">  <span class="tag">&lt;<span class="name">li</span> <span class="attr">class</span>=<span class="string">&#x27;item&#x27;</span>&gt;</span>Item 3<span class="tag">&lt;/<span class="name">li</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">ul</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>既然原来 DOM 树的信息都可以用 JavaScript 对象来表示，反过来，你就可以根据这个用 JavaScript 对象表示的树结构来构建一棵真正的DOM树。用新渲染的对象树去和旧的树进行对比，记录这两棵树差异。记录下来的不同就是我们需要对页面真正的 DOM 操作，然后把它们应用在真正的 DOM 树上，页面就变更了。这样就可以做到：视图的结构确实是整个全新渲染了，但是也避免了没有必要的dom操作，从而提高性能。</p>
+<p>这就是所谓的 Virtual DOM 算法。具体实现步骤：</p>
+<ol>
+<li>用 JavaScript 对象结构表示 DOM 树的结构；然后用这个树构建一个真正的 DOM 树，插到文档当中</li>
+<li>当状态变更的时候，重新构造一棵新的对象树。然后用新的树和旧的树进行比较，记录两棵树差异</li>
+<li>把2所记录的差异应用到步骤1所构建的真正的DOM树上，视图就更新了</li>
+</ol>
+<p>Virtual DOM 本质上就是在 <strong>JS 和 DOM 之间做了一个缓存</strong>。可以类比 CPU 和硬盘，既然硬盘这么慢，我们就在它们之间加个缓存：既然 DOM 这么慢，我们就在它们 JS 和 DOM 之间加个缓存。CPU（JS）只操作内存（Virtual DOM），最后的时候再把变更写入硬盘（DOM）。</p>
+<h3 id="虚拟DOM"><a href="#虚拟DOM" class="headerlink" title="虚拟DOM"></a>虚拟DOM</h3><p><strong>用算法实现虚拟DOM</strong></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">VDOM</span>(<span class="params">tagName, props, children</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">tagName</span> = tagName;<span class="comment">//元素标签名</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">props</span> = props;<span class="comment">//元素所包含的属性</span></span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">children</span> = children;<span class="comment">//元素的子标签（数组）</span></span><br><span class="line">&#125;</span><br><span class="line"><span class="variable constant_">VDOM</span>.<span class="property"><span class="keyword">prototype</span></span>.<span class="property">render</span> = <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="comment">// 建立一个真实元素</span></span><br><span class="line">    <span class="keyword">var</span> el = <span class="variable language_">document</span>.<span class="title function_">createElement</span>(<span class="variable language_">this</span>.<span class="property">tagName</span>);</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// 往该元素上添加属性</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> name <span class="keyword">in</span> <span class="variable language_">this</span>.<span class="property">props</span>) &#123;</span><br><span class="line">        el.<span class="title function_">setAttribute</span>(name, <span class="variable language_">this</span>.<span class="property">props</span>[name]);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">// children是一个数组</span></span><br><span class="line">    <span class="keyword">var</span> children = <span class="variable language_">this</span>.<span class="property">children</span> || [];</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">var</span> child <span class="keyword">of</span> children) &#123;</span><br><span class="line">        <span class="keyword">var</span> childEl = (child <span class="keyword">instanceof</span> <span class="variable constant_">VDOM</span>) ? child.<span class="title function_">render</span>() <span class="comment">//如果子节点是虚拟DOM，递归构建DOM节点</span></span><br><span class="line">     :<span class="variable language_">document</span>.<span class="title function_">createTextNode</span>(child);<span class="comment">//如果字符串，只构建文本节点</span></span><br><span class="line">        el.<span class="title function_">appendChild</span>(childEl);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> el;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="diff算法"><a href="#diff算法" class="headerlink" title="diff算法"></a>diff算法</h3><p>比较两棵DOM树的差异是 Virtual DOM 算法最核心的部分，这也是所谓的 Virtual DOM 的 diff 算法。<strong>两个树的完全的 diff 算法是一个时间复杂度为 O(n^3) 的问题</strong>。但是在前端当中，你很少会跨越层级地移动DOM元素。所以 Virtual DOM 只会<strong>对同一个层级的元素进行对比</strong>：</p>
+<p><img src="https://liu-yunnan-hexo-blog.oss-cn-beijing.aliyuncs.com/img/202204121921513.png" alt="image-20220412172905079"></p>
+<p>上图中div只会和同一层级的div对比，第二层的只会跟第二层级对比。这样算法复杂度就到了O(n)</p>
+<p><img src="https://liu-yunnan-hexo-blog.oss-cn-beijing.aliyuncs.com/img/202204121921232.png" alt="image-20220412184025887"></p>
+<p>在深度优先遍历的时候，每遍历到一个节点就把该节点和新的的树进行对比。如果有差异的话就记录到一个对象里面。</p>
+<p><strong>diff.js 的简单代码实现</strong>：</p>
+<p>在同层进行比较时候会出现四种情况：</p>
+<p>1、此节点是否被移除 -&gt; 添加新的节点<br> 2、属性是否被改变 -&gt; 旧属性改为新属性<br> 3、文本内容被改变-&gt; 旧内容改为新内容<br> 4、节点要被整个替换 -&gt; 结构完全不相同 移除整个替换</p>
+<p>最后返回一个patch对象用来应用到实际的DOM tree更新，它的结构是这样的：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// index记录是哪一层的改变，type表示是哪种变化，第二个属性对应着变化存储相应的内容</span></span><br><span class="line">patches = &#123;<span class="attr">index</span>:[&#123;<span class="attr">type</span>: utils.<span class="property">REMOVE</span>/utils.<span class="property">TEXT</span>/utils.<span class="property">ATTRS</span>/utils.<span class="property">REPLACE</span>, index/content/attrs/<span class="attr">node</span>: &#125;, ...], ...&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> utils = <span class="built_in">require</span>(<span class="string">&#x27;./utils&#x27;</span>);</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> keyIndex = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">diff</span>(<span class="params">oldTree, newTree</span>) &#123;</span><br><span class="line">    <span class="comment">//记录差异的空对象。key就是老节点在原来虚拟DOM树中的序号，值就是一个差异对象数组</span></span><br><span class="line">    <span class="keyword">let</span> patches = &#123;&#125;;</span><br><span class="line">    keyIndex = <span class="number">0</span>; <span class="comment">// 儿子要起另外一个标识</span></span><br><span class="line">    <span class="keyword">let</span> index = <span class="number">0</span>; <span class="comment">// 父亲的表示 1 儿子的标识就是1.1 1.2</span></span><br><span class="line">    <span class="title function_">walk</span>(oldTree, newTree, index, patches);</span><br><span class="line">    <span class="keyword">return</span> patches;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//遍历</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">walk</span>(<span class="params">oldNode, newNode, index, patches</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> currentPatches = []; <span class="comment">//这个数组里记录了所有的oldNode的变化</span></span><br><span class="line">    <span class="keyword">if</span> (!newNode) &#123; <span class="comment">//如果新节点没有了，则认为此节点被删除了</span></span><br><span class="line">        currentPatches.<span class="title function_">push</span>(&#123;<span class="attr">type</span>: utils.<span class="property">REMOVE</span>, index&#125;);</span><br><span class="line">        <span class="comment">//如果说老节点的新的节点都是文本节点的话</span></span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (utils.<span class="title function_">isString</span>(oldNode) &amp;&amp; utils.<span class="title function_">isString</span>(newNode)) &#123;</span><br><span class="line">        <span class="comment">//如果新的字符符值和旧的不一样</span></span><br><span class="line">        <span class="keyword">if</span> (oldNode != newNode) &#123;</span><br><span class="line">            <span class="comment">///文本改变</span></span><br><span class="line">            currentPatches.<span class="title function_">push</span>(&#123;<span class="attr">type</span>: utils.<span class="property">TEXT</span>, <span class="attr">content</span>: newNode&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> (oldNode.<span class="property">tagName</span> == newNode.<span class="property">tagName</span>) &#123;</span><br><span class="line">        <span class="comment">//比较新旧元素的属性对象</span></span><br><span class="line">        <span class="keyword">let</span> attrsPatch = <span class="title function_">diffAttr</span>(oldNode.<span class="property">attrs</span>, newNode.<span class="property">attrs</span>);</span><br><span class="line">        <span class="comment">//如果新旧元素有差异 的属性的话</span></span><br><span class="line">        <span class="keyword">if</span> (<span class="title class_">Object</span>.<span class="title function_">keys</span>(attrsPatch).<span class="property">length</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="comment">//添加到差异数组中去</span></span><br><span class="line">            currentPatches.<span class="title function_">push</span>(&#123;<span class="attr">type</span>: utils.<span class="property">ATTRS</span>, <span class="attr">attrs</span>: attrsPatch&#125;);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//自己比完后再比自己的儿子们</span></span><br><span class="line">        <span class="title function_">diffChildren</span>(oldNode.<span class="property">children</span>, newNode.<span class="property">children</span>, index, patches, currentPatches);</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        currentPatches.<span class="title function_">push</span>(&#123;<span class="attr">type</span>: utils.<span class="property">REPLACE</span>, <span class="attr">node</span>: newNode&#125;);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (currentPatches.<span class="property">length</span> &gt; <span class="number">0</span>) &#123;</span><br><span class="line">        patches[index] = currentPatches;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//老的节点的儿子们 新节点的儿子们 父节点的序号 完整补丁对象 当前旧节点的补丁对象</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">diffChildren</span>(<span class="params">oldChildren, newChildren, index, patches, currentPatches</span>) &#123;</span><br><span class="line">    oldChildren.<span class="title function_">forEach</span>(<span class="function">(<span class="params">child, idx</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="title function_">walk</span>(child, newChildren[idx], ++keyIndex, patches);</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">diffAttr</span>(<span class="params">oldAttrs, newAttrs</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> attrsPatch = &#123;&#125;;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> attr <span class="keyword">in</span> oldAttrs) &#123;</span><br><span class="line">        <span class="comment">//如果说老的属性和新属性不一样。一种是值改变 ，一种是属性被删除 了</span></span><br><span class="line">        <span class="keyword">if</span> (oldAttrs[attr] != newAttrs[attr]) &#123;</span><br><span class="line">            attrsPatch[attr] = newAttrs[attr];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 对比旧节点新增的属性</span></span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">let</span> attr <span class="keyword">in</span> newAttrs) &#123;</span><br><span class="line">        <span class="keyword">if</span> (!oldAttrs.<span class="title function_">hasOwnProperty</span>(attr)) &#123;</span><br><span class="line">            attrsPatch[attr] = newAttrs[attr];</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> attrsPatch;</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = diff;</span><br></pre></td></tr></table></figure>
+
+<h3 id="patch-js的简单实现"><a href="#patch-js的简单实现" class="headerlink" title="patch.js的简单实现"></a>patch.js的简单实现</h3><p>把差异应用到真正的DOM树上</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> keyIndex = <span class="number">0</span>;</span><br><span class="line"><span class="keyword">let</span> utils = <span class="built_in">require</span>(<span class="string">&#x27;./utils&#x27;</span>);</span><br><span class="line"><span class="keyword">let</span> allPatches;<span class="comment">//这里就是完整的补丁包</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">patch</span>(<span class="params">root, patches</span>) &#123;</span><br><span class="line">    allPatches = patches;</span><br><span class="line">    <span class="title function_">walk</span>(root);</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">walk</span>(<span class="params">node</span>) &#123;</span><br><span class="line">    <span class="comment">//从patches拿出当前节点的差异</span></span><br><span class="line">    <span class="keyword">let</span> currentPatches = allPatches[keyIndex++];</span><br><span class="line">    (node.<span class="property">childNodes</span> || []).<span class="title function_">forEach</span>(<span class="function"><span class="params">child</span> =&gt;</span> <span class="title function_">walk</span>(child));</span><br><span class="line">    <span class="keyword">if</span> (currentPatches) &#123;</span><br><span class="line">        <span class="title function_">doPatch</span>(node, currentPatches);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">function</span> <span class="title function_">doPatch</span>(<span class="params">node, currentPatches</span>) &#123;</span><br><span class="line">    currentPatches.<span class="title function_">forEach</span>(<span class="function"><span class="params">patch</span> =&gt;</span> &#123;</span><br><span class="line">        <span class="keyword">switch</span> (patch.<span class="property">type</span>) &#123;</span><br><span class="line">            <span class="keyword">case</span> utils.<span class="property">ATTRS</span>:</span><br><span class="line">                <span class="keyword">for</span> (<span class="keyword">let</span> attr <span class="keyword">in</span> patch.<span class="property">attrs</span>) &#123;</span><br><span class="line">                    <span class="keyword">let</span> value = patch.<span class="property">attrs</span>[attr];</span><br><span class="line">                    <span class="keyword">if</span> (value) &#123;</span><br><span class="line">                        utils.<span class="title function_">setAttr</span>(node, attr, value);</span><br><span class="line">                    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                        node.<span class="title function_">removeAttribute</span>(attr);</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> utils.<span class="property">TEXT</span>:</span><br><span class="line">                node.<span class="property">textContent</span> = patch.<span class="property">content</span>;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> utils.<span class="property">REPLACE</span>:</span><br><span class="line">                <span class="keyword">let</span> newNode = (patch.<span class="property">node</span> <span class="keyword">instanceof</span> <span class="title class_">Element</span>) ? path.<span class="property">node</span>.<span class="title function_">render</span>() : <span class="variable language_">document</span>.<span class="title function_">createTextNode</span>(path.<span class="property">node</span>);</span><br><span class="line">                node.<span class="property">parentNode</span>.<span class="title function_">replaceChild</span>(newNode, node);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            <span class="keyword">case</span> utils.<span class="property">REMOVE</span>:</span><br><span class="line">                node.<span class="property">parentNode</span>.<span class="title function_">removeChild</span>(node);</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">&#125;</span><br><span class="line"><span class="variable language_">module</span>.<span class="property">exports</span> = patch;</span><br></pre></td></tr></table></figure>
+
+<h3 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h3><p>Virtual DOM 算法主要是实现上面步骤的三个函数：VDOM、diff、patch。然后就可以实际的进行使用：</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1. 构建虚拟DOM</span></span><br><span class="line"><span class="keyword">var</span> tree = <span class="title function_">el</span>(<span class="string">&#x27;div&#x27;</span>, &#123;<span class="string">&#x27;id&#x27;</span>: <span class="string">&#x27;container&#x27;</span>&#125;, [</span><br><span class="line">    <span class="title function_">el</span>(<span class="string">&#x27;h1&#x27;</span>, &#123;<span class="attr">style</span>: <span class="string">&#x27;color: blue&#x27;</span>&#125;, [<span class="string">&#x27;simple virtal dom&#x27;</span>]),</span><br><span class="line">    <span class="title function_">el</span>(<span class="string">&#x27;p&#x27;</span>, [<span class="string">&#x27;Hello, virtual-dom&#x27;</span>]),</span><br><span class="line">    <span class="title function_">el</span>(<span class="string">&#x27;ul&#x27;</span>, [<span class="title function_">el</span>(<span class="string">&#x27;li&#x27;</span>)])</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2. 通过虚拟DOM构建真正的DOM</span></span><br><span class="line"><span class="keyword">var</span> root = tree.<span class="title function_">render</span>()</span><br><span class="line"><span class="variable language_">document</span>.<span class="property">body</span>.<span class="title function_">appendChild</span>(root)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3. 生成新的虚拟DOM</span></span><br><span class="line"><span class="keyword">var</span> newTree = <span class="title function_">el</span>(<span class="string">&#x27;div&#x27;</span>, &#123;<span class="string">&#x27;id&#x27;</span>: <span class="string">&#x27;container&#x27;</span>&#125;, [</span><br><span class="line">    <span class="title function_">el</span>(<span class="string">&#x27;h1&#x27;</span>, &#123;<span class="attr">style</span>: <span class="string">&#x27;color: red&#x27;</span>&#125;, [<span class="string">&#x27;simple virtal dom&#x27;</span>]),</span><br><span class="line">    <span class="title function_">el</span>(<span class="string">&#x27;p&#x27;</span>, [<span class="string">&#x27;Hello, virtual-dom&#x27;</span>]),</span><br><span class="line">    <span class="title function_">el</span>(<span class="string">&#x27;ul&#x27;</span>, [<span class="title function_">el</span>(<span class="string">&#x27;li&#x27;</span>), <span class="title function_">el</span>(<span class="string">&#x27;li&#x27;</span>)])</span><br><span class="line">])</span><br><span class="line"></span><br><span class="line"><span class="comment">// 4. 比较两棵虚拟DOM树的不同</span></span><br><span class="line"><span class="keyword">var</span> patches = <span class="title function_">diff</span>(tree, newTree)</span><br><span class="line"></span><br><span class="line"><span class="comment">// 5. 在真正的DOM元素上应用变更</span></span><br><span class="line"><span class="title function_">patch</span>(root, patches)</span><br></pre></td></tr></table></figure>
+
+<p>最后，推荐一个vdom库：<a target="_blank" rel="noopener" href="https://github.com/snabbdom/snabbdom">snabbdom</a>，vue参考它实现的vdom和diff</p>
+<blockquote>
+<p>参考文章：<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/29504639?sort=created">https://www.zhihu.com/question/29504639?sort=created</a></p>
+</blockquote>
+
+  </article>
+  
+</article>
+
+
+<div id="waline"></div>
+
+    </div>
+  </div>
+  <footer>
+  
+  
+  <p id="busuanzi_container_site_pv">
+    本站访问量 <span id="busuanzi_value_site_pv">获取中...</span>
+  </p>
+  
+  <p>
+    Powered by <a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a> | Theme <a target="_blank" rel="noopener" href="https://github.com/syy11cn/hexo-theme-linear">Linear</a> from <a target="_blank" rel="noopener" href="https://syy11.cn">Yiyang Sun</a>
+  </p>
+</footer>
+  
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js">
+  </script>
+  <script>
+    Waline({
+      el: '#waline',
+      placeholder: '',
+      avatar: 'retro',
+      visitor: true,
+      requiredFields: ['nick', 'mail'],
+      serverURL: '',
+      emoji: [
+        'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/bilibili',
+        'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/qq',
+        'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/alus',
+        'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/tw-emoji',
+        'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/weibo',
+        'https://cdn.jsdelivr.net/gh/walinejs/emojis@1.0.0/tieba',
+      ]
+    });
+  </script>
+</body>
+
+</html>
